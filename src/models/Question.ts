@@ -2,89 +2,122 @@ import {
   createSchema, ExtractProps, Type, typedModel,
 } from 'ts-mongoose';
 
-const typeEnum = [
-  // #region base type
+export const typeEnum = [
+  // #region base
   'developer',
   'designer',
   'manager',
   // #endregion
 
-  // #region developer category
-  'software developer',
-  'service developer',
-  'engineering developer',
+  // #region developer
+  'p1',
+  'p2',
+  'p3',
+  'p4',
   // #endregion
 
-  // #region designer category
-  '2d graphic designer',
-  '3d graphic designer',
-  'ui ux designer',
-  'sfx designer',
+  // #region designer
+  'd1',
+  'd2',
+  'd3',
+  'd4',
   // #endregion
 
-  // #region manager category
-  'lead manager',
-  'business manager',
-  'marketing manager',
+  // #region manager
+  'm1',
+  'm2',
+  'm3',
+  'm4',
   // #endregion
 
-  // #region developer type
+  // #region p1
   'application developer',
   'game developer',
-  'white hacker',
-  'frontend developer',
-  'backend developer',
-  'mobile developer',
-  'machine learning engineer',
-  'iot and robotics engineer',
   // #endregion
 
-  // #region designer type
+  // #region p2
+  'frontend developer',
+  'mobile application developer',
+  // #endregion
+
+  // #region p3
+  'machine learning engineer',
+  'iot & robotics engineer',
+  // #endregion
+
+  // #region p4
+  'information security professional',
+  'backend developer',
+  // #endregion
+
+  // #region d1
   'illustrator',
   'editing designer',
-  'product designer',
-  'animator',
-  'ui designer',
-  'ux designer',
-  'video designer',
-  'computer graphic designer',
   // #endregion
 
-  // #region manager type
+  // #region d2
+  'product designer',
+  'animator',
+  // #endregion
+
+  // #region d3
+  'ui designer',
+  'ux designer',
+  // #endregion
+
+  // #region d4
+  'video designer',
+  'computer graphics professor',
+  // #endregion
+
+  // #region m1
   'product manager',
-  'human resource manager',
   'business development manager',
+  // #endregion
+
+  // #region m2
   'business analyst',
-  'finance manager',
+  'accounting manager',
+  // #endregion
+
+  // #region m3
   'communication manager',
+  'personnel manager',
+  // #endregion
+
+  // #region m4
   'marketer',
-  'customer manager',
+  'customer representative',
   // #endregion
 ];
 
-const chapterEnum = ['common', 'common sub', 'position', 'position sub', 'detail', 'detail sub', 'nonsense1', 'nonsense2', 'nonsense3'];
-
-export const QuestionSchema = createSchema(
+const QuestionSchema = createSchema(
   {
-    title: Type.string({ required: true, unique: true }),
-    content: Type.array({ required: true }).of({
-      text: Type.string({ required: true }),
-      data: Type.array({ required: true }).of({
-        type: Type.string({ required: true, enum: typeEnum }),
-        score: Type.number({ required: true }),
-      }),
+    sequence: Type.string({
+      required: true,
+      enum: ['ch1', 'bridge1', 'non1', 'ch2', 'bridge2', 'non2', 'ch3'],
     }),
-    chapter: Type.string({ required: true, enum: chapterEnum }),
-    type: Type.string({ enum: typeEnum }),
-    sub: Type.array().of(Type.string({ enum: typeEnum })),
+    sub: Type.string({ enum: typeEnum }),
+    question: Type.string({ required: true, unique: true }),
+    answer: Type.array({ required: true }).of({
+      text: Type.string({ required: true }),
+      score: {
+        type: Type.string({
+          required: true,
+          enum: typeEnum,
+        }),
+        num: Type.number({ required: true }),
+      },
+    }),
   },
   {
     versionKey: false,
+    timestamps: true,
   },
 );
 
-export type QuestionProps = ExtractProps<typeof QuestionSchema>;
-
 const Question = typedModel('Question', QuestionSchema);
+
+export type QuestionProps = ExtractProps<typeof QuestionSchema>;
 
 export default Question;

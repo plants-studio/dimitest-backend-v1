@@ -1,16 +1,12 @@
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 
-import { QuestionSchema } from './Question';
+import { typeEnum } from './Question';
 
 const AnswerSchema = createSchema(
   {
     name: Type.string({ required: true }),
-    list: Type.array({ required: true }).of(
-      Type.ref({
-        question: Type.ref(QuestionSchema),
-        index: Type.number(),
-      }),
-    ),
+    gender: Type.string({ required: true, enum: ['male', 'female'] }),
+    result: Type.string({ required: true, enum: typeEnum }),
   },
   {
     versionKey: false,
