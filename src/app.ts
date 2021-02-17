@@ -1,31 +1,30 @@
 import 'dotenv-safe/config';
 
-import cors from 'cors';
-import express from 'express';
-import helmet from 'helmet';
+import cors from '@koa/cors';
+import Router from '@koa/router';
+import fs from 'fs';
 import http from 'http';
 import https from 'https';
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import forceHTTPS from 'koa-force-https';
+import helmet from 'koa-helmet';
+import morgan from 'koa-morgan';
 import mongoose from 'mongoose';
-import morgan from 'morgan';
+import path from 'path';
 
+import api from './api';
 import { logger, stream } from './configs/winston';
-import ipBan from './middlewares/ipBan';
-import routes from './routes';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
-const app = express();
+const options = {
+  key: fs.readFileSync(path.join('keys', 'private.pem')),
+  cert: fs.readFileSync(path.join('keys', 'public.pem')),
+};
 
-app.set('json spaces', 2);
-
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(morgan(isDev ? 'dev' : 'combined', isDev ? undefined : { stream }));
-app.use(ipBan);
-
-app.use('/api', routes);
+const app = new Koa();
+const router = new Router();
 
 mongoose.connect(
   process.env.DB_URI!,
@@ -45,20 +44,39 @@ mongoose.connect(
   },
 );
 
+app.use(cors());
+app.use(helmet());
+app.use(morgan(isDev ? 'dev' : 'combined', { stream }));
+if (!isDev) {
+  app.use(forceHTTPS());
+}
+app.use(bodyParser());
+
+router.use('/api', api.routes());
+
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+app.on('error', (err, ctx) => {
+  logger.error(`error: ${err} context: ${ctx}`);
+});
+
 if (isDev) {
-  http.createServer(app).listen(process.env.PORT, async () => {
-    logger.info(`Development server is running http://localhost:${process.env.PORT}`);
+  http.createServer(app.callback()).listen(process.env.PORT, () => {
+    logger.info(`Development http server is running http://localhost:${process.env.PORT}`);
   });
+  https
+    .createServer(options, app.callback())
+    .listen(Number.parseInt(process.env.PORT!, 10) + 1, () => {
+      logger.info(
+        `Development https server is running https://localhost:${
+          Number.parseInt(process.env.PORT!, 10) + 1
+        }`,
+      );
+    });
 } else {
-  http
-    .createServer((req, res) => {
-      res.writeHead(301, {
-        Location: `https://${req.headers.host}${req.url}`,
-      });
-      res.end();
-    })
-    .listen(80);
-  https.createServer(app).listen(443, () => {
+  http.createServer(app.callback()).listen(80);
+  https.createServer(options, app.callback()).listen(443, () => {
     logger.info('Production server is running at port 443');
   });
 }

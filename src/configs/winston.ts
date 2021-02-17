@@ -5,6 +5,7 @@ const logDir = 'logs';
 const { combine, timestamp, printf } = winston.format;
 
 const logFormat = printf((info) => `${info.timestamp} ${info.level}: ${info.message}`);
+const isDev = process.env.NODE_ENV !== 'production';
 
 export const logger = winston.createLogger({
   format: combine(
@@ -19,7 +20,7 @@ export const logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: logDir,
       filename: '%DATE%.log',
-      maxFiles: 30,
+      maxFiles: 60,
       zippedArchive: true,
     }),
     new WinstonDaily({
@@ -27,13 +28,13 @@ export const logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: logDir,
       filename: '%DATE%.error.log',
-      maxFiles: 30,
+      maxFiles: 60,
       zippedArchive: true,
     }),
   ],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (isDev) {
   logger.add(
     new winston.transports.Console({
       format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
@@ -43,6 +44,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const stream = {
   write: (message: string) => {
-    logger.info(`timestamp: ${new Date()} message: ${message}`);
+    logger.info(message);
   },
 };

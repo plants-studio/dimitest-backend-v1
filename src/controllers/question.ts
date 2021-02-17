@@ -1,63 +1,24 @@
-import { Request, Response } from 'express';
+import { ParameterizedContext } from 'koa';
 
 import { logger } from '../configs/winston';
 import Answer from '../models/Answer';
 import Question, { QuestionProps } from '../models/Question';
+import getDuplicateType from '../utils/getDuplicateType';
+import getRandomList from '../utils/getRandomList';
+import getScoreResult from '../utils/getScoreResult';
+import isDuplicate from '../utils/isDuplicate';
 
-const getRandomList = <T>(list: T[], length: number): T[] => {
-  const array = list;
-  for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-
-  return array.slice(0, length);
-};
-
-const getDuplicateType = (score: { [key: string]: number }): string[] => {
-  const result: string[] = [];
-  const value = Math.max(...Object.values(score));
-  Object.entries(score).forEach((v) => {
-    if (v[1] === value) {
-      result.push(v[0]);
-    }
-  });
-  return result;
-};
-
-const isDuplicate = (score: { [key: string]: number }): boolean => {
-  const value = Object.values(score);
-  const max = Math.max(...value);
-  let count = 0;
-  value.forEach((v) => {
-    if (v === max) {
-      count += 1;
-    }
-  });
-  if (count > 1) {
-    return true;
-  }
-  return false;
-};
-
-const getScoreResult = (score: { [key: string]: number }): string => {
-  let result: string = '';
-  const value = Math.max(...Object.values(score));
-  Object.entries(score).forEach((v) => {
-    if (v[1] === value) {
-      [result] = v;
-    }
-  });
-  return result;
-};
-
-export const ch1 = async (req: Request, res: Response) => {
+export const ch1 = async (ctx: ParameterizedContext) => {
   const question = await Question.find({ sequence: 'ch1' });
   const list = getRandomList(question, 6);
-  res.json(list);
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data: list,
+  };
 };
 
-export const ch2 = async (req: Request, res: Response) => {
+export const ch2 = async (ctx: ParameterizedContext) => {
   const {
     result,
   }: {
@@ -65,7 +26,16 @@ export const ch2 = async (req: Request, res: Response) => {
       type: 'developer' | 'designer' | 'manager';
       num: number;
     }[];
-  } = req.body;
+  } = ctx.request.body;
+
+  if (!result || result.length < 1) {
+    ctx.status = 412;
+    ctx.body = {
+      status: ctx.status,
+      data: null,
+    };
+    return;
+  }
 
   const score = { developer: 0, designer: 0, manager: 0 };
   result.forEach((v) => {
@@ -75,7 +45,11 @@ export const ch2 = async (req: Request, res: Response) => {
   if (isDuplicate(score)) {
     const question = await Question.find({ sequence: 'bridge1', sub: getDuplicateType(score) });
     const list = getRandomList(question, 1);
-    res.json(list);
+    ctx.status = 200;
+    ctx.body = {
+      status: ctx.status,
+      data: list,
+    };
     return;
   }
 
@@ -84,16 +58,24 @@ export const ch2 = async (req: Request, res: Response) => {
 
   if (result.length !== 6) {
     const list = getRandomList(question, 5);
-    res.json(list);
+    ctx.status = 200;
+    ctx.body = {
+      status: ctx.status,
+      data: list,
+    };
     return;
   }
 
   const nonList = getRandomList(non, 1);
   const questionList = getRandomList(question, 5);
-  res.json(nonList.concat(questionList));
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data: nonList.concat(questionList),
+  };
 };
 
-export const ch3 = async (req: Request, res: Response) => {
+export const ch3 = async (ctx: ParameterizedContext) => {
   const {
     result,
   }: {
@@ -101,7 +83,16 @@ export const ch3 = async (req: Request, res: Response) => {
       type: 'p1' | 'p2' | 'p3' | 'p4' | 'd1' | 'd2' | 'd3' | 'd4' | 'm1' | 'm2' | 'm3' | 'm4';
       num: number;
     }[];
-  } = req.body;
+  } = ctx.request.body;
+
+  if (!result || result.length < 1) {
+    ctx.status = 412;
+    ctx.body = {
+      status: ctx.status,
+      data: null,
+    };
+    return;
+  }
 
   const score = {
     p1: 0,
@@ -124,7 +115,11 @@ export const ch3 = async (req: Request, res: Response) => {
   if (isDuplicate(score)) {
     const question = await Question.find({ sequence: 'bridge2', sub: getDuplicateType(score) });
     const list = getRandomList(question, 1);
-    res.json(list);
+    ctx.status = 200;
+    ctx.body = {
+      status: ctx.status,
+      data: list,
+    };
     return;
   }
 
@@ -133,16 +128,24 @@ export const ch3 = async (req: Request, res: Response) => {
 
   if (result.length !== 5) {
     const list = getRandomList(question, 3);
-    res.json(list);
+    ctx.status = 200;
+    ctx.body = {
+      status: ctx.status,
+      data: list,
+    };
     return;
   }
 
   const nonList = getRandomList(non, 1);
   const questionList = getRandomList(question, 3);
-  res.json(nonList.concat(questionList));
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data: nonList.concat(questionList),
+  };
 };
 
-export const typeResult = async (req: Request, res: Response) => {
+export const typeResult = async (ctx: ParameterizedContext) => {
   const {
     result,
     name,
@@ -176,7 +179,16 @@ export const typeResult = async (req: Request, res: Response) => {
     }[];
     name: string;
     gender: string;
-  } = req.body;
+  } = ctx.request.body;
+
+  if (!result || result.length < 1 || !name || !gender) {
+    ctx.status = 412;
+    ctx.body = {
+      status: ctx.status,
+      data: null,
+    };
+    return;
+  }
 
   const score = {
     'application developer': 0,
@@ -214,20 +226,27 @@ export const typeResult = async (req: Request, res: Response) => {
   });
   await answer.save();
 
-  res.json(r);
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data: r,
+  };
 };
 
-export const createQuestion = async (req: Request, res: Response) => {
-  const { key } = req.params;
-  const { data }: { data: QuestionProps } = req.body;
+export const createQuestion = async (ctx: ParameterizedContext) => {
+  const { key } = ctx.params;
+  const { data }: { data: QuestionProps } = ctx.request.body;
+
+  logger.info('admin tried');
 
   if (key !== process.env.ADMIN_KEY) {
-    logger.info(`admin failed ip: ${req.socket.remoteAddress}`);
-    res.sendStatus(403);
+    logger.info('admin failed');
+    ctx.sendStatus(403);
     return;
   }
 
   const question = new Question(data);
   await question.save();
-  res.sendStatus(200);
+  logger.info('admin succeed');
+  ctx.sendStatus(201);
 };
