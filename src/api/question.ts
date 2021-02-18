@@ -2,7 +2,7 @@ import Router from '@koa/router';
 
 import {
   ch1, ch2, ch3, createQuestion, typeResult,
-} from '../../controllers/question';
+} from '../controllers/question';
 
 const router = new Router();
 
