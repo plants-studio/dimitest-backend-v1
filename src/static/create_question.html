@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Question</title>
+    <script src="/leave.js"></script>
+    <script src="/create_question.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <fieldset>
+      <legend>어드민 키를 적어주세요</legend>
+      <input id="adminKey" type="text" placeholder="어드민 키" />
+    </fieldset>
+
+    <fieldset>
+      <legend>순서를 골라주세요</legend>
+      <select id="sequence" onchange="select(this)">
+        <optgroup label="챕터">
+          <option value="ch1">챕터1</option>
+          <option value="ch2">챕터2</option>
+          <option value="ch3">챕터3</option>
+        </optgroup>
+        <optgroup label="추가 질문">
+          <option value="bridge1">
+            챕터1과 챕터2를 이어주는 추가 질문 (1X)
+          </option>
+          <option value="bridge2">
+            챕터2와 챕터3을 이어주는 추가 질문 (2X)
+          </option>
+        </optgroup>
+        <optgroup label="재미용 질문">
+          <option value="non1">
+            챕터1과 챕터2를 이어주는 재미용 질문 (1N)
+          </option>
+          <option value="non2">
+            챕터2와 챕터3을 이어주는 재미용 질문 (2N)
+          </option>
+        </optgroup>
+      </select>
+    </fieldset>
+
+    <fieldset id="subField" hidden>
+      <legend>누구를 위한 질문인가요?</legend>
+      <div>
+        <select id="sub">
+          <optgroup label="챕터 1">
+            <option value="developer">개발자</option>
+            <option value="designer">디자이너</option>
+            <option value="manager">기획자</option>
+          </optgroup>
+          <optgroup label="챕터 2">
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+              <option value="p1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+              <option value="p2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+              <option value="p3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+              <option value="p4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+            </optgroup>
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+              <option value="d1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+              <option value="d2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+              <option value="d3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+              <option value="d4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+            </optgroup>
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+              <option value="m1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+              <option value="m2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+              <option value="m3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+              <option value="m4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+            </optgroup>
+          </optgroup>
+          <optgroup label="챕터 3">
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+              <option value="application developer">
+                &nbsp;&nbsp;&nbsp;&nbsp;응용프로그램 개발자 (타입 1)
+              </option>
+              <option value="game developer">&nbsp;&nbsp;&nbsp;&nbsp;게임 개발자 (타입 1)</option>
+              <option value="frontend developer">
+                &nbsp;&nbsp;&nbsp;&nbsp;프론트엔드 개발자 (타입 2)
+              </option>
+              <option value="mobile application developer">
+                &nbsp;&nbsp;&nbsp;&nbsp;모바일 어플리케이션 개발자 (타입 2)
+              </option>
+              <option value="machine learning engineer">
+                &nbsp;&nbsp;&nbsp;&nbsp;머신러닝 엔지니어 (타입 3)
+              </option>
+              <option value="iot & robotics engineer">
+                &nbsp;&nbsp;&nbsp;&nbsp;IOT&로보틱스 엔지니어 (타입 3)
+              </option>
+              <option value="information security professional">
+                &nbsp;&nbsp;&nbsp;&nbsp;정보보안 전문가 (타입 4)
+              </option>
+              <option value="backend developer">
+                &nbsp;&nbsp;&nbsp;&nbsp;백엔드 개발자 (타입 4)
+              </option>
+            </optgroup>
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+              <option value="illustrator">
+                &nbsp;&nbsp;&nbsp;&nbsp;일러스트레이터 (타입 1)
+              </option>
+              <option value="editing designer">
+                &nbsp;&nbsp;&nbsp;&nbsp;편집 디자이너 (타입 1)
+              </option>
+              <option value="product designer">
+                &nbsp;&nbsp;&nbsp;&nbsp;제품 디자이너 (타입 2)
+              </option>
+              <option value="animator">&nbsp;&nbsp;&nbsp;&nbsp;애니메이터 (타입 2)</option>
+              <option value="ui designer">&nbsp;&nbsp;&nbsp;&nbsp;UI 디자이너 (타입 3)</option>
+              <option value="ux designer">&nbsp;&nbsp;&nbsp;&nbsp;UX 디자이너 (타입 3)</option>
+              <option value="video designer">
+                &nbsp;&nbsp;&nbsp;&nbsp;영상 디자이너 (타입 4)
+              </option>
+              <option value="computer graphics professor">
+                &nbsp;&nbsp;&nbsp;&nbsp;CG 전문가 (타입 4)
+              </option>
+            </optgroup>
+            <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+              <option value="product manager">
+                &nbsp;&nbsp;&nbsp;&nbsp;프로덕트 매니저 (타입 1)
+              </option>
+              <option value="business development manager">
+                &nbsp;&nbsp;&nbsp;&nbsp;사업개발 매니저 (타입 1)
+              </option>
+              <option value="business analyst">
+                &nbsp;&nbsp;&nbsp;&nbsp;비즈니스 분석가 (타입 2)
+              </option>
+              <option value="accounting manager">
+                &nbsp;&nbsp;&nbsp;&nbsp;회계/자금 담당자 (타입 2)
+              </option>
+              <option value="communication manager">
+                &nbsp;&nbsp;&nbsp;&nbsp;커뮤니케이션 매니저 (타입 3)
+              </option>
+              <option value="personnel manager">
+                &nbsp;&nbsp;&nbsp;&nbsp;인사 담당자 (타입 3)
+              </option>
+              <option value="marketer">&nbsp;&nbsp;&nbsp;&nbsp;마케터 (타입 4)</option>
+              <option value="customer representative">
+                &nbsp;&nbsp;&nbsp;&nbsp;고객 담당자 (타입 4)
+              </option>
+            </optgroup>
+          </optgroup>
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>질문의 내용을 적어주세요</legend>
+      <div>
+        <input id="question" type="text" placeholder="질문의 내용" />
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>선택지를 적어주세요</legend>
+      <div>
+        <h3>1번 문항</h3>
+        <input class="answer_text" type="text" placeholder="선택지의 내용" />
+        <div>
+          <select class="answer_score_type">
+            <optgroup label="챕터 1">
+              <option value="developer">개발자</option>
+              <option value="designer">디자이너</option>
+              <option value="manager">기획자</option>
+            </optgroup>
+            <optgroup label="챕터 2">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="p1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="p2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="p3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="p4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="d1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="d2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="d3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="d4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="m1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="m2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="m3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="m4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+            </optgroup>
+            <optgroup label="챕터 3">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;응용프로그램 개발자 (타입 1)
+                </option>
+                <option value="game developer">&nbsp;&nbsp;&nbsp;&nbsp;게임 개발자 (타입 1)</option>
+                <option value="frontend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프론트엔드 개발자 (타입 2)
+                </option>
+                <option value="mobile application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;모바일 어플리케이션 개발자 (타입 2)
+                </option>
+                <option value="machine learning engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;머신러닝 엔지니어 (타입 3)
+                </option>
+                <option value="iot & robotics engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;IOT&로보틱스 엔지니어 (타입 3)
+                </option>
+                <option value="information security professional">
+                  &nbsp;&nbsp;&nbsp;&nbsp;정보보안 전문가 (타입 4)
+                </option>
+                <option value="backend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;백엔드 개발자 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="illustrator">
+                  &nbsp;&nbsp;&nbsp;&nbsp;일러스트레이터 (타입 1)
+                </option>
+                <option value="editing designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;편집 디자이너 (타입 1)
+                </option>
+                <option value="product designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;제품 디자이너 (타입 2)
+                </option>
+                <option value="animator">&nbsp;&nbsp;&nbsp;&nbsp;애니메이터 (타입 2)</option>
+                <option value="ui designer">&nbsp;&nbsp;&nbsp;&nbsp;UI 디자이너 (타입 3)</option>
+                <option value="ux designer">&nbsp;&nbsp;&nbsp;&nbsp;UX 디자이너 (타입 3)</option>
+                <option value="video designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;영상 디자이너 (타입 4)
+                </option>
+                <option value="computer graphics professor">
+                  &nbsp;&nbsp;&nbsp;&nbsp;CG 전문가 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="product manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프로덕트 매니저 (타입 1)
+                </option>
+                <option value="business development manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;사업개발 매니저 (타입 1)
+                </option>
+                <option value="business analyst">
+                  &nbsp;&nbsp;&nbsp;&nbsp;비즈니스 분석가 (타입 2)
+                </option>
+                <option value="accounting manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;회계/자금 담당자 (타입 2)
+                </option>
+                <option value="communication manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;커뮤니케이션 매니저 (타입 3)
+                </option>
+                <option value="personnel manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;인사 담당자 (타입 3)
+                </option>
+                <option value="marketer">&nbsp;&nbsp;&nbsp;&nbsp;마케터 (타입 4)</option>
+                <option value="customer representative">
+                  &nbsp;&nbsp;&nbsp;&nbsp;고객 담당자 (타입 4)
+                </option>
+              </optgroup>
+            </optgroup>
+          </select>
+          <input class="answer_score_num" type="number" placeholder="점수" />
+        </div>
+        <div>
+          <select class="answer_score_type">
+            <option>선택안함</option>
+            <optgroup label="챕터 1">
+              <option value="developer">개발자</option>
+              <option value="designer">디자이너</option>
+              <option value="manager">기획자</option>
+            </optgroup>
+            <optgroup label="챕터 2">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="p1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="p2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="p3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="p4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="d1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="d2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="d3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="d4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="m1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="m2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="m3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="m4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+            </optgroup>
+            <optgroup label="챕터 3">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;응용프로그램 개발자 (타입 1)
+                </option>
+                <option value="game developer">&nbsp;&nbsp;&nbsp;&nbsp;게임 개발자 (타입 1)</option>
+                <option value="frontend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프론트엔드 개발자 (타입 2)
+                </option>
+                <option value="mobile application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;모바일 어플리케이션 개발자 (타입 2)
+                </option>
+                <option value="machine learning engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;머신러닝 엔지니어 (타입 3)
+                </option>
+                <option value="iot & robotics engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;IOT&로보틱스 엔지니어 (타입 3)
+                </option>
+                <option value="information security professional">
+                  &nbsp;&nbsp;&nbsp;&nbsp;정보보안 전문가 (타입 4)
+                </option>
+                <option value="backend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;백엔드 개발자 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="illustrator">
+                  &nbsp;&nbsp;&nbsp;&nbsp;일러스트레이터 (타입 1)
+                </option>
+                <option value="editing designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;편집 디자이너 (타입 1)
+                </option>
+                <option value="product designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;제품 디자이너 (타입 2)
+                </option>
+                <option value="animator">&nbsp;&nbsp;&nbsp;&nbsp;애니메이터 (타입 2)</option>
+                <option value="ui designer">&nbsp;&nbsp;&nbsp;&nbsp;UI 디자이너 (타입 3)</option>
+                <option value="ux designer">&nbsp;&nbsp;&nbsp;&nbsp;UX 디자이너 (타입 3)</option>
+                <option value="video designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;영상 디자이너 (타입 4)
+                </option>
+                <option value="computer graphics professor">
+                  &nbsp;&nbsp;&nbsp;&nbsp;CG 전문가 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="product manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프로덕트 매니저 (타입 1)
+                </option>
+                <option value="business development manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;사업개발 매니저 (타입 1)
+                </option>
+                <option value="business analyst">
+                  &nbsp;&nbsp;&nbsp;&nbsp;비즈니스 분석가 (타입 2)
+                </option>
+                <option value="accounting manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;회계/자금 담당자 (타입 2)
+                </option>
+                <option value="communication manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;커뮤니케이션 매니저 (타입 3)
+                </option>
+                <option value="personnel manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;인사 담당자 (타입 3)
+                </option>
+                <option value="marketer">&nbsp;&nbsp;&nbsp;&nbsp;마케터 (타입 4)</option>
+                <option value="customer representative">
+                  &nbsp;&nbsp;&nbsp;&nbsp;고객 담당자 (타입 4)
+                </option>
+              </optgroup>
+            </optgroup>
+          </select>
+          <input class="answer_score_num" type="number" placeholder="점수" />
+        </div>
+      </div>
+      <div>
+        <h3>2번 문항</h3>
+        <input class="answer_text" type="text" placeholder="선택지의 내용" />
+        <div>
+          <select class="answer_score_type">
+            <optgroup label="챕터 1">
+              <option value="developer">개발자</option>
+              <option value="designer">디자이너</option>
+              <option value="manager">기획자</option>
+            </optgroup>
+            <optgroup label="챕터 2">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="p1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="p2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="p3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="p4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="d1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="d2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="d3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="d4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="m1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="m2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="m3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="m4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+            </optgroup>
+            <optgroup label="챕터 3">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;응용프로그램 개발자 (타입 1)
+                </option>
+                <option value="game developer">&nbsp;&nbsp;&nbsp;&nbsp;게임 개발자 (타입 1)</option>
+                <option value="frontend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프론트엔드 개발자 (타입 2)
+                </option>
+                <option value="mobile application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;모바일 어플리케이션 개발자 (타입 2)
+                </option>
+                <option value="machine learning engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;머신러닝 엔지니어 (타입 3)
+                </option>
+                <option value="iot & robotics engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;IOT&로보틱스 엔지니어 (타입 3)
+                </option>
+                <option value="information security professional">
+                  &nbsp;&nbsp;&nbsp;&nbsp;정보보안 전문가 (타입 4)
+                </option>
+                <option value="backend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;백엔드 개발자 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="illustrator">
+                  &nbsp;&nbsp;&nbsp;&nbsp;일러스트레이터 (타입 1)
+                </option>
+                <option value="editing designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;편집 디자이너 (타입 1)
+                </option>
+                <option value="product designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;제품 디자이너 (타입 2)
+                </option>
+                <option value="animator">&nbsp;&nbsp;&nbsp;&nbsp;애니메이터 (타입 2)</option>
+                <option value="ui designer">&nbsp;&nbsp;&nbsp;&nbsp;UI 디자이너 (타입 3)</option>
+                <option value="ux designer">&nbsp;&nbsp;&nbsp;&nbsp;UX 디자이너 (타입 3)</option>
+                <option value="video designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;영상 디자이너 (타입 4)
+                </option>
+                <option value="computer graphics professor">
+                  &nbsp;&nbsp;&nbsp;&nbsp;CG 전문가 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="product manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프로덕트 매니저 (타입 1)
+                </option>
+                <option value="business development manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;사업개발 매니저 (타입 1)
+                </option>
+                <option value="business analyst">
+                  &nbsp;&nbsp;&nbsp;&nbsp;비즈니스 분석가 (타입 2)
+                </option>
+                <option value="accounting manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;회계/자금 담당자 (타입 2)
+                </option>
+                <option value="communication manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;커뮤니케이션 매니저 (타입 3)
+                </option>
+                <option value="personnel manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;인사 담당자 (타입 3)
+                </option>
+                <option value="marketer">&nbsp;&nbsp;&nbsp;&nbsp;마케터 (타입 4)</option>
+                <option value="customer representative">
+                  &nbsp;&nbsp;&nbsp;&nbsp;고객 담당자 (타입 4)
+                </option>
+              </optgroup>
+            </optgroup>
+          </select>
+          <input class="answer_score_num" type="number" placeholder="점수" />
+        </div>
+        <div>
+          <select class="answer_score_type">
+            <option>선택안함</option>
+            <optgroup label="챕터 1">
+              <option value="developer">개발자</option>
+              <option value="designer">디자이너</option>
+              <option value="manager">기획자</option>
+            </optgroup>
+            <optgroup label="챕터 2">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="p1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="p2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="p3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="p4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="d1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="d2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="d3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="d4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="m1">&nbsp;&nbsp;&nbsp;&nbsp;타입 1</option>
+                <option value="m2">&nbsp;&nbsp;&nbsp;&nbsp;타입 2</option>
+                <option value="m3">&nbsp;&nbsp;&nbsp;&nbsp;타입 3</option>
+                <option value="m4">&nbsp;&nbsp;&nbsp;&nbsp;타입 4</option>
+              </optgroup>
+            </optgroup>
+            <optgroup label="챕터 3">
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;개발자">
+                <option value="application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;응용프로그램 개발자 (타입 1)
+                </option>
+                <option value="game developer">&nbsp;&nbsp;&nbsp;&nbsp;게임 개발자 (타입 1)</option>
+                <option value="frontend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프론트엔드 개발자 (타입 2)
+                </option>
+                <option value="mobile application developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;모바일 어플리케이션 개발자 (타입 2)
+                </option>
+                <option value="machine learning engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;머신러닝 엔지니어 (타입 3)
+                </option>
+                <option value="iot & robotics engineer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;IOT&로보틱스 엔지니어 (타입 3)
+                </option>
+                <option value="information security professional">
+                  &nbsp;&nbsp;&nbsp;&nbsp;정보보안 전문가 (타입 4)
+                </option>
+                <option value="backend developer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;백엔드 개발자 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;디자이너">
+                <option value="illustrator">
+                  &nbsp;&nbsp;&nbsp;&nbsp;일러스트레이터 (타입 1)
+                </option>
+                <option value="editing designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;편집 디자이너 (타입 1)
+                </option>
+                <option value="product designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;제품 디자이너 (타입 2)
+                </option>
+                <option value="animator">&nbsp;&nbsp;&nbsp;&nbsp;애니메이터 (타입 2)</option>
+                <option value="ui designer">&nbsp;&nbsp;&nbsp;&nbsp;UI 디자이너 (타입 3)</option>
+                <option value="ux designer">&nbsp;&nbsp;&nbsp;&nbsp;UX 디자이너 (타입 3)</option>
+                <option value="video designer">
+                  &nbsp;&nbsp;&nbsp;&nbsp;영상 디자이너 (타입 4)
+                </option>
+                <option value="computer graphics professor">
+                  &nbsp;&nbsp;&nbsp;&nbsp;CG 전문가 (타입 4)
+                </option>
+              </optgroup>
+              <optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;기획자">
+                <option value="product manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;프로덕트 매니저 (타입 1)
+                </option>
+                <option value="business development manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;사업개발 매니저 (타입 1)
+                </option>
+                <option value="business analyst">
+                  &nbsp;&nbsp;&nbsp;&nbsp;비즈니스 분석가 (타입 2)
+                </option>
+                <option value="accounting manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;회계/자금 담당자 (타입 2)
+                </option>
+                <option value="communication manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;커뮤니케이션 매니저 (타입 3)
+                </option>
+                <option value="personnel manager">
+                  &nbsp;&nbsp;&nbsp;&nbsp;인사 담당자 (타입 3)
+                </option>
+                <option value="marketer">&nbsp;&nbsp;&nbsp;&nbsp;마케터 (타입 4)</option>
+                <option value="customer representative">
+                  &nbsp;&nbsp;&nbsp;&nbsp;고객 담당자 (타입 4)
+                </option>
+              </optgroup>
+            </optgroup>
+          </select>
+          <input class="answer_score_num" type="number" placeholder="점수" />
+        </div>
+      </div>
+    </fieldset>
+
+    <button onclick="create()">질문 만들기</button>
+  </body>
+</html>

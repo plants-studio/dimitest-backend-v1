@@ -10,6 +10,7 @@ import bodyParser from 'koa-bodyparser';
 import forceHTTPS from 'koa-force-https';
 import helmet from 'koa-helmet';
 import morgan from 'koa-morgan';
+import koaStatic from 'koa-static';
 import mongoose from 'mongoose';
 import path from 'path';
 
@@ -45,12 +46,17 @@ mongoose.connect(
 );
 
 app.use(cors());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
 app.use(morgan(isDev ? 'dev' : 'combined', { stream }));
 if (!isDev) {
   app.use(forceHTTPS());
 }
 app.use(bodyParser());
+app.use(koaStatic(path.join(__dirname, 'static')));
 
 router.use('/api', api.routes());
 
