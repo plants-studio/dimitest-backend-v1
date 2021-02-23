@@ -101,13 +101,13 @@ const QuestionSchema = createSchema(
     question: Type.string({ required: true, unique: true }),
     answer: Type.array({ required: true }).of({
       text: Type.string({ required: true }),
-      score: {
+      score: Type.array({ required: true }).of({
         type: Type.string({
           required: true,
           enum: typeEnum,
         }),
         num: Type.number({ required: true }),
-      },
+      }),
     }),
   },
   {

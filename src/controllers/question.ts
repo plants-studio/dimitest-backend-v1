@@ -174,7 +174,9 @@ export const typeResult = async (ctx: ParameterizedContext) => {
         | 'business analyst'
         | 'accounting manager'
         | 'communication manager'
-        | 'personnel manager';
+        | 'personnel manager'
+        | 'marketer'
+        | 'customer representative';
       num: number;
     }[];
     name: string;
@@ -213,6 +215,8 @@ export const typeResult = async (ctx: ParameterizedContext) => {
     'accounting manager': 0,
     'communication manager': 0,
     'personnel manager': 0,
+    marketer: 0,
+    'customer representative': 0,
   };
   result.forEach((v) => {
     score[v.type] += v.num;
@@ -240,13 +244,21 @@ export const createQuestion = async (ctx: ParameterizedContext) => {
   logger.info('admin tried');
 
   if (key !== process.env.ADMIN_KEY) {
-    logger.info('admin failed');
-    ctx.sendStatus(403);
+    logger.error('admin failed');
+    ctx.status = 403;
+    ctx.body = {
+      status: ctx.status,
+      data,
+    };
     return;
   }
 
   const question = new Question(data);
   await question.save();
   logger.info('admin succeed');
-  ctx.sendStatus(201);
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data,
+  };
 };
