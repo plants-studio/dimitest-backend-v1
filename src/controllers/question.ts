@@ -172,7 +172,7 @@ export const typeResult = async (ctx: ParameterizedContext) => {
         | 'product manager'
         | 'business development manager'
         | 'business analyst'
-        | 'accounting manager'
+        | 'finance manager'
         | 'communication manager'
         | 'personnel manager'
         | 'marketer'
@@ -212,7 +212,7 @@ export const typeResult = async (ctx: ParameterizedContext) => {
     'product manager': 0,
     'business development manager': 0,
     'business analyst': 0,
-    'accounting manager': 0,
+    'finance manager': 0,
     'communication manager': 0,
     'personnel manager': 0,
     marketer: 0,

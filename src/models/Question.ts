@@ -77,7 +77,7 @@ export const typeEnum = [
 
   // #region m2
   'business analyst',
-  'accounting manager',
+  'finance manager',
   // #endregion
 
   // #region m3
