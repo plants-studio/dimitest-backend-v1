@@ -2,7 +2,7 @@ import 'dotenv-safe/config';
 
 import cors from '@koa/cors';
 import Router from '@koa/router';
-import fs from 'fs';
+// import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import Koa from 'koa';
@@ -19,10 +19,10 @@ import { logger, stream } from './configs/winston';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-const options = {
-  key: fs.readFileSync(path.join('keys', 'private.pem')),
-  cert: fs.readFileSync(path.join('keys', 'public.pem')),
-};
+// const options = {
+//   key: fs.readFileSync(path.join('keys', 'private.pem')),
+//   cert: fs.readFileSync(path.join('keys', 'public.pem')),
+// };
 
 const app = new Koa();
 const router = new Router();
@@ -72,7 +72,7 @@ if (isDev) {
     logger.info(`Development http server is running http://localhost:${process.env.PORT}`);
   });
   https
-    .createServer(options, app.callback())
+    .createServer(/* options, */ app.callback())
     .listen(Number.parseInt(process.env.PORT!, 10) + 1, () => {
       logger.info(
         `Development https server is running https://localhost:${
@@ -82,7 +82,7 @@ if (isDev) {
     });
 } else {
   http.createServer(app.callback()).listen(80);
-  https.createServer(options, app.callback()).listen(443, () => {
+  https.createServer(/* options, */ app.callback()).listen(443, () => {
     logger.info('Production server is running at port 443');
   });
 }
