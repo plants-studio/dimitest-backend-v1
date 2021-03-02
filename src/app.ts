@@ -52,9 +52,9 @@ app.use(
   }),
 );
 app.use(morgan(isDev ? 'dev' : 'combined', { stream }));
-if (!isDev) {
-  app.use(forceHTTPS());
-}
+// if (!isDev) {
+//   // app.use(forceHTTPS());
+// }
 app.use(bodyParser());
 app.use(koaStatic(path.join(__dirname, 'static')));
 
