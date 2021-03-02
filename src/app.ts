@@ -87,6 +87,6 @@ app.on('error', (err, ctx) => {
 // });
 // }
 
-app.listen(Number.parseInt(process.env.PORT!, 10), 'api.dimitest.me', () => {
+app.listen(Number.parseInt(process.env.PORT!, 10), () => {
   logger.info(`Production server is running at port ${process.env.PORT}`);
 });
