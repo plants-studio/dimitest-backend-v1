@@ -67,22 +67,22 @@ app.on('error', (err, ctx) => {
   logger.error(`error: ${err} context: ${ctx}`);
 });
 
-if (isDev) {
-  http.createServer(app.callback()).listen(process.env.PORT, () => {
-    logger.info(`Development http server is running http://localhost:${process.env.PORT}`);
-  });
-  https
-    .createServer(/* options, */ app.callback())
-    .listen(Number.parseInt(process.env.PORT!, 10) + 1, () => {
-      logger.info(
-        `Development https server is running https://localhost:${
-          Number.parseInt(process.env.PORT!, 10) + 1
-        }`,
-      );
-    });
-} else {
-  http.createServer(app.callback()).listen(80);
-  https.createServer(/* options, */ app.callback()).listen(443, () => {
-    logger.info('Production server is running at port 443');
-  });
-}
+// if (isDev) {
+//   http.createServer(app.callback()).listen(process.env.PORT, () => {
+//     logger.info(`Development http server is running http://localhost:${process.env.PORT}`);
+//   });
+//   https
+//     .createServer(/* options, */ app.callback())
+//     .listen(Number.parseInt(process.env.PORT!, 10) + 1, () => {
+//       logger.info(
+//         `Development https server is running https://localhost:${
+//           Number.parseInt(process.env.PORT!, 10) + 1
+//         }`,
+//       );
+//     });
+// } else {
+http.createServer(app.callback()).listen(80);
+https.createServer(/* options, */ app.callback()).listen(443, () => {
+  logger.info('Production server is running at port 443');
+});
+// }
