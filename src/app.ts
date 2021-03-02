@@ -82,7 +82,11 @@ app.on('error', (err, ctx) => {
 //     });
 // } else {
 // http.createServer(app.callback()).listen(process.env.PORT);
-https.createServer(/* options, */ app.callback()).listen(process.env.PORT, () => {
-  logger.info('Production server is running at port 443');
-});
+// https.createServer(/* options, */ app.callback()).listen(process.env.PORT, () => {
+//   logger.info('Production server is running at port 443');
+// });
 // }
+
+app.listen(Number.parseInt(process.env.PORT!, 10), 'api.dimitest.me', () => {
+  logger.info(`Production server is running at port ${process.env.PORT}`);
+});
