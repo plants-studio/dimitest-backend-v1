@@ -81,8 +81,8 @@ app.on('error', (err, ctx) => {
 //       );
 //     });
 // } else {
-http.createServer(app.callback()).listen(80);
-https.createServer(/* options, */ app.callback()).listen(443, () => {
-  logger.info('Production server is running at port 443');
-});
+http.createServer(app.callback()).listen(process.env.PORT);
+// https.createServer(/* options, */ app.callback()).listen(443, () => {
+//   logger.info('Production server is running at port 443');
+// });
 // }
