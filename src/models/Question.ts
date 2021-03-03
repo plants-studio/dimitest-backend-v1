@@ -3,102 +3,61 @@ import {
 } from 'ts-mongoose';
 
 export const typeEnum = [
-  // #region base
   'developer',
   'designer',
   'manager',
-  // #endregion
-
-  // #region developer
-  'p1',
-  'p2',
-  'p3',
-  'p4',
-  // #endregion
-
-  // #region designer
-  'd1',
-  'd2',
-  'd3',
-  'd4',
-  // #endregion
-
-  // #region manager
-  'm1',
-  'm2',
-  'm3',
-  'm4',
-  // #endregion
-
-  // #region p1
+  'pA',
+  'pB',
+  'dA',
+  'dB',
+  'mA',
+  'mB',
+  'pA1',
+  'pA2',
+  'pB1',
+  'pB2',
+  'dA1',
+  'dA2',
+  'dB1',
+  'dB2',
+  'mA1',
+  'mA2',
+  'mB1',
+  'mB2',
   'application developer',
   'game developer',
-  // #endregion
-
-  // #region p2
   'frontend developer',
   'mobile application developer',
-  // #endregion
-
-  // #region p3
   'machine learning engineer',
   'iot & robotics engineer',
-  // #endregion
-
-  // #region p4
   'information security professional',
   'backend developer',
-  // #endregion
-
-  // #region d1
   'illustrator',
   'editing designer',
-  // #endregion
-
-  // #region d2
   'product designer',
   'animator',
-  // #endregion
-
-  // #region d3
   'ui designer',
   'ux designer',
-  // #endregion
-
-  // #region d4
   'video designer',
   'computer graphics professor',
-  // #endregion
-
-  // #region m1
   'product manager',
   'business development manager',
-  // #endregion
-
-  // #region m2
   'business analyst',
   'finance manager',
-  // #endregion
-
-  // #region m3
   'communication manager',
   'personnel manager',
-  // #endregion
-
-  // #region m4
   'marketer',
   'customer representative',
-  // #endregion
 ];
 
 const QuestionSchema = createSchema(
   {
     sequence: Type.string({
       required: true,
-      enum: ['ch1', 'bridge1', 'non1', 'ch2', 'bridge2', 'non2', 'ch3'],
+      enum: ['ch1', 'bridge1', 'non1', 'ch2', 'bridge2', 'non2', 'ch3', 'ch4'],
     }),
-    sub: Type.string({ enum: typeEnum }),
-    question: Type.string({ required: true, unique: true }),
+    sub: Type.array().of(Type.string({ enum: typeEnum })),
+    question: Type.string({ required: true }),
     answer: Type.array({ required: true }).of({
       text: Type.string({ required: true }),
       score: Type.array({ required: true }).of({

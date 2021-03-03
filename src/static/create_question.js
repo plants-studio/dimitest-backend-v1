@@ -1,15 +1,17 @@
 function create(key) {
   var sequence = document.getElementById('sequence');
-  var sub = document.getElementById('sub');
+  var sub = document.getElementsByClassName('sub');
   var question = document.getElementById('question');
   var answerText = document.getElementsByClassName('answer_text');
   var answerScoreType = document.getElementsByClassName('answer_score_type');
   var answerScoreNum = document.getElementsByClassName('answer_score_num');
   var answer = [];
-  for (var i = 0; i < 2; i += 1) {
+  for (let i = 0; i < 2; i += 1) {
     var score = [];
-    for (var j = i; j < i + 2; j += 1) {
-      if (answerScoreType[j + i].options[answerScoreType[j + i].selectedIndex].value === '선택안함') {
+    for (let j = i; j < i + 2; j += 1) {
+      if (
+        answerScoreType[j + i].options[answerScoreType[j + i].selectedIndex].value === '선택안함'
+      ) {
         break;
       }
       score.push({
@@ -24,7 +26,13 @@ function create(key) {
   }
   var data = {
     sequence: sequence.options[sequence.selectedIndex].value,
-    sub: sub.options[sub.selectedIndex].value,
+    sub: [...sub]
+      .map((v) => {
+        if (v.options[v.selectedIndex].value === '선택안함') {
+          return;
+        }
+        return v.options[v.selectedIndex].value;
+      }).filter((v) => v != null),
     question: question.value,
     answer,
   };

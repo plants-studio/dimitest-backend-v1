@@ -5,7 +5,7 @@ import { typeEnum } from './Question';
 const AnswerSchema = createSchema(
   {
     name: Type.string({ required: true }),
-    gender: Type.string({ required: true, enum: ['male', 'female'] }),
+    gender: Type.string({ required: true, enum: ['남자', '여자'] }),
     result: Type.string({ required: true, enum: typeEnum }),
   },
   {

@@ -28,7 +28,7 @@ export const ch2 = async (ctx: ParameterizedContext) => {
     }[];
   } = ctx.request.body;
 
-  if (!result || result.length < 1) {
+  if (!result || (result.length !== 12 && result.length < 1)) {
     ctx.status = 412;
     ctx.body = {
       status: ctx.status,
@@ -56,8 +56,8 @@ export const ch2 = async (ctx: ParameterizedContext) => {
   const non = await Question.find({ sequence: 'non1' });
   const question = await Question.find({ sequence: 'ch2', sub: getScoreResult(score) });
 
-  if (result.length !== 6) {
-    const list = getRandomList(question, 5);
+  if (result.length !== 12) {
+    const list = getRandomList(question, 1);
     ctx.status = 200;
     ctx.body = {
       status: ctx.status,
@@ -67,7 +67,7 @@ export const ch2 = async (ctx: ParameterizedContext) => {
   }
 
   const nonList = getRandomList(non, 1);
-  const questionList = getRandomList(question, 5);
+  const questionList = getRandomList(question, 1);
   ctx.status = 200;
   ctx.body = {
     status: ctx.status,
@@ -80,7 +80,7 @@ export const ch3 = async (ctx: ParameterizedContext) => {
     result,
   }: {
     result: {
-      type: 'p1' | 'p2' | 'p3' | 'p4' | 'd1' | 'd2' | 'd3' | 'd4' | 'm1' | 'm2' | 'm3' | 'm4';
+      type: 'pA' | 'pB' | 'dA' | 'dB' | 'mA' | 'mB';
       num: number;
     }[];
   } = ctx.request.body;
@@ -95,18 +95,12 @@ export const ch3 = async (ctx: ParameterizedContext) => {
   }
 
   const score = {
-    p1: 0,
-    p2: 0,
-    p3: 0,
-    p4: 0,
-    d1: 0,
-    d2: 0,
-    d3: 0,
-    d4: 0,
-    m1: 0,
-    m2: 0,
-    m3: 0,
-    m4: 0,
+    pA: 0,
+    pB: 0,
+    dA: 0,
+    dB: 0,
+    mA: 0,
+    mB: 0,
   };
   result.forEach((v) => {
     score[v.type] += v.num;
@@ -123,25 +117,70 @@ export const ch3 = async (ctx: ParameterizedContext) => {
     return;
   }
 
-  const non = await Question.find({ sequence: 'non2' });
   const question = await Question.find({ sequence: 'ch3', sub: getScoreResult(score) });
+  const questionList = getRandomList(question, 1);
+  ctx.status = 200;
+  ctx.body = {
+    status: ctx.status,
+    data: questionList,
+  };
+};
 
-  if (result.length !== 5) {
-    const list = getRandomList(question, 3);
-    ctx.status = 200;
+export const ch4 = async (ctx: ParameterizedContext) => {
+  const {
+    result,
+  }: {
+    result: {
+      type:
+        | 'pA1'
+        | 'pA2'
+        | 'pB1'
+        | 'pB2'
+        | 'dA1'
+        | 'dA2'
+        | 'dB1'
+        | 'dB2'
+        | 'mA1'
+        | 'mA2'
+        | 'mB1'
+        | 'mB2';
+      num: number;
+    }[];
+  } = ctx.request.body;
+
+  if (!result || result.length < 1) {
+    ctx.status = 412;
     ctx.body = {
       status: ctx.status,
-      data: list,
+      data: null,
     };
     return;
   }
 
-  const nonList = getRandomList(non, 1);
-  const questionList = getRandomList(question, 3);
+  const score = {
+    pA1: 0,
+    pA2: 0,
+    pB1: 0,
+    pB2: 0,
+    dA1: 0,
+    dA2: 0,
+    dB1: 0,
+    dB2: 0,
+    mA1: 0,
+    mA2: 0,
+    mB1: 0,
+    mB2: 0,
+  };
+  result.forEach((v) => {
+    score[v.type] += v.num;
+  });
+
+  const question = await Question.find({ sequence: 'ch4', sub: getScoreResult(score) });
+  const questionList = getRandomList(question, 1);
   ctx.status = 200;
   ctx.body = {
     status: ctx.status,
-    data: nonList.concat(questionList),
+    data: questionList,
   };
 };
 
@@ -182,6 +221,7 @@ export const typeResult = async (ctx: ParameterizedContext) => {
     name: string;
     gender: string;
   } = ctx.request.body;
+  console.log(result);
 
   if (!result || result.length < 1 || !name || !gender) {
     ctx.status = 412;
@@ -240,6 +280,7 @@ export const typeResult = async (ctx: ParameterizedContext) => {
 export const createQuestion = async (ctx: ParameterizedContext) => {
   const { key } = ctx.params;
   const { data }: { data: QuestionProps } = ctx.request.body;
+  console.log(data);
 
   logger.info('admin tried');
 
